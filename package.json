@@ -4,11 +4,18 @@
   "description": "An MongoDB extension for AntJS",
   "main": "index.js",
   "scripts": {
+    "build": "./node_modules/typescript/bin/tsc --build src.tsconfig.commonjs.json",
+    "clear-js": "node ./scripts/clear-compiled.js",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format-check": "prettier --check \"src/**/*.ts\"",
+    "linter": "./node_modules/tslint/bin/tslint -c ./tslint.json -p ./src.tsconfig.commonjs.json",
     "test": "test"
   },
   "author": "Roberto Pintos López",
   "license": "MIT",
   "devDependencies": {
+    "prettier": "^1.18.2",
+    "tslint": "^5.20.0",
     "typescript": "^3.6.4"
   },
   "dependencies": {
