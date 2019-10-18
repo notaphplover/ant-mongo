@@ -1,0 +1,11 @@
+{
+  "name": "ant-mongo",
+  "version": "1.0.0",
+  "description": "An MongoDB extension for AntJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Roberto Pintos López",
+  "license": "MIT"
+}

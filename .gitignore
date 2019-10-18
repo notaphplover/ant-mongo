@@ -1,0 +1,18 @@
+# Visual studio code
+/.vscode
+
+# IstambulJS coverage reports
+/api.nyc_output
+/api-coverage
+
+# Compiled files
+/src/**/*.js
+/src/**/*.js.map
+/src/**/*.d.ts
+/src/**/*.d.ts.map
+
+# npm dependencies
+/node_modules
+
+# coveralls config
+.coveralls.yml
