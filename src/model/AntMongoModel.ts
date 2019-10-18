@@ -7,8 +7,8 @@ const ANT_MONGO_DEFAULT_ID = 'id';
 const MONGO_DB_ID = '_id';
 
 const defaultMapping: IMappingStrategy = {
-  docToEntity: (field: string) => MONGO_DB_ID === field ? ANT_MONGO_DEFAULT_ID : field,
-  entityToDoc: (field: string) => ANT_MONGO_DEFAULT_ID === field ? MONGO_DB_ID : field,
+  docToEntity: (field: string) => (MONGO_DB_ID === field ? ANT_MONGO_DEFAULT_ID : field),
+  entityToDoc: (field: string) => (ANT_MONGO_DEFAULT_ID === field ? MONGO_DB_ID : field),
   fields: [ANT_MONGO_DEFAULT_ID],
 };
 
@@ -22,6 +22,12 @@ export class MongoModel extends Model implements IAntMongoModel {
    */
   protected _mappingStrategy: IMappingStrategy;
 
+  /**
+   * Creates a new Ant Mongo model.
+   * @param keyGen Key generation arguments.
+   * @param collectionName MongoDB collection name.
+   * @param mappingStrategy Mapping strategy.
+   */
   public constructor(
     keyGen: IKeyGenParams,
     collectionName: string,
@@ -31,10 +37,16 @@ export class MongoModel extends Model implements IAntMongoModel {
     this._collectionName = collectionName;
   }
 
+  /**
+   * @inheritdoc
+   */
   public get collectionName(): string {
     return this._collectionName;
   }
 
+  /**
+   * @inheritdoc
+   */
   public get mappingStrategy(): IMappingStrategy {
     return this._mappingStrategy;
   }
