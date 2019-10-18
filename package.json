@@ -7,5 +7,11 @@
     "test": "test"
   },
   "author": "Roberto Pintos López",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "mongodb": "^3.3.3"
+  }
 }
