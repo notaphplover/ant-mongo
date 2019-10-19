@@ -9,12 +9,15 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format-check": "prettier --check \"src/**/*.ts\"",
     "linter": "./node_modules/tslint/bin/tslint -c ./tslint.json -p ./src.tsconfig.commonjs.json",
-    "test": "test"
+    "test": "test",
+    "test-only": "node_modules/nyc/bin/nyc.js --nycrc-path=api.nycrc.json node ./node_modules/jasmine/bin/jasmine.js ./src/test/main.test.js"
   },
   "author": "Roberto Pintos López",
   "license": "MIT",
   "devDependencies": {
+    "@types/jasmine": "^3.4.4",
     "jasmine": "^3.5.0",
+    "nyc": "^14.1.1",
     "prettier": "^1.18.2",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"
