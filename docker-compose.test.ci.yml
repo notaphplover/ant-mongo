@@ -4,6 +4,7 @@ services:
     build: .
     command: ["npm", "run", "ci"]
     environment:
+      COVERALLS_REPO_TOKEN: ${COVERALLS_REPO_TOKEN}
       NODE_DEBUG_PORT_INNER: ${NODE_DEBUG_PORT_INNER}
       NODE_DEBUG_PORT_OUTER: ${NODE_DEBUG_PORT_OUTER}
     volumes:
