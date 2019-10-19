@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc --build src.tsconfig.commonjs.json",
+    "build-and-test": "npm run build && npm run test-only",
     "clear-js": "node ./scripts/clear-compiled.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "format-check": "prettier --check \"src/**/*.ts\"",
     "linter": "./node_modules/tslint/bin/tslint -c ./tslint.json -p ./src.tsconfig.commonjs.json",
-    "test": "test",
+    "test": "npm run test-docker",
+    "test-docker": "docker-compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from ant_lib",
     "test-only": "node_modules/nyc/bin/nyc.js --nycrc-path=api.nycrc.json node ./node_modules/jasmine/bin/jasmine.js ./src/test/main.test.js"
   },
   "author": "Roberto Pintos López",
