@@ -1,0 +1,11 @@
+{
+    "cache": false,
+    "exclude": [
+      "src/test/**"
+    ],
+    "exclude-after-remap": false,
+    "report-dir": "api-coverage",
+    "reporter": "lcov",
+    "sourceMap": true,
+    "temp-dir": "./api.nyc_output"
+}
