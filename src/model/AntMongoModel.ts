@@ -35,6 +35,7 @@ export class AntMongoModel extends Model implements IAntMongoModel {
   ) {
     super(mappingStrategy.docToEntity(MONGO_DB_ID), keyGen);
     this._collectionName = collectionName;
+    this._mappingStrategy = mappingStrategy;
   }
 
   /**
