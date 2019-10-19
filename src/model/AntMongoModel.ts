@@ -12,7 +12,7 @@ const defaultMapping: IMappingStrategy = {
   fields: [ANT_MONGO_DEFAULT_ID],
 };
 
-export class MongoModel extends Model implements IAntMongoModel {
+export class AntMongoModel extends Model implements IAntMongoModel {
   /**
    * Name of the MongoDB collection mapped to this model.
    */
