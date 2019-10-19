@@ -1,0 +1,28 @@
+version: '3'
+services:
+  ant_lib:
+    build: .
+    command: ["npm", "run", "ci"]
+    environment:
+      NODE_DEBUG_PORT_INNER: ${NODE_DEBUG_PORT_INNER}
+      NODE_DEBUG_PORT_OUTER: ${NODE_DEBUG_PORT_OUTER}
+    volumes:
+      - .:/app
+      - /app/node_modules/
+    depends_on:
+      - ant_redis
+    ports:
+      - "${NODE_DEBUG_PORT_OUTER}:${NODE_DEBUG_PORT_INNER}"
+    networks:
+      - ant
+  ant_mongo:
+    image: mongo:4.2.0-bionic
+    networks:
+      - ant
+  ant_redis:
+    image: redis:5.0.6-alpine
+    networks:
+      - ant
+networks:
+  ant:
+    driver: bridge
