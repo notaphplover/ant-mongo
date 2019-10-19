@@ -14,6 +14,7 @@
   "author": "Roberto Pintos López",
   "license": "MIT",
   "devDependencies": {
+    "jasmine": "^3.5.0",
     "prettier": "^1.18.2",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"
