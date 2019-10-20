@@ -35,5 +35,9 @@
   "dependencies": {
     "@antjs/ant-js": "^1.0.0-beta.9",
     "mongodb": "^3.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notaphplover/ant-mongo.git"
   }
 }
