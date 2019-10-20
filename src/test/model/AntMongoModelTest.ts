@@ -2,7 +2,6 @@ import { ITest } from '@antjs/ant-js/src/testapi/api/ITest';
 import { AntMongoModel } from '../../model/AntMongoModel';
 
 export class AntMongoModelTest implements ITest {
-
   public performTests(): void {
     describe('Ant MongoDB Model tests', () => {
       this._itMustBeInitializable();
@@ -18,7 +17,7 @@ export class AntMongoModelTest implements ITest {
   }
 
   private _itMustStoreInitialValues(): void {
-    it ('must store initial values', async (done) => {
+    it('must store initial values', async (done) => {
       const keyGenParams = { prefix: 'some-prefix' };
       const collectionName = 'my-sample-model';
       const mappings = {
