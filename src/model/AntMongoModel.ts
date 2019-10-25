@@ -28,11 +28,7 @@ export class AntMongoModel extends AntModel implements IAntMongoModel {
    * @param collectionName MongoDB collection name.
    * @param mappingStrategy Mapping strategy.
    */
-  public constructor(
-    keyGen: KeyGenParams,
-    collectionName: string,
-    mappingStrategy: IMappingStrategy = defaultMapping,
-  ) {
+  public constructor(keyGen: KeyGenParams, collectionName: string, mappingStrategy: IMappingStrategy = defaultMapping) {
     super(mappingStrategy.docToEntity(MONGO_DB_ID), keyGen);
     this._collectionName = collectionName;
     this._mappingStrategy = mappingStrategy;
