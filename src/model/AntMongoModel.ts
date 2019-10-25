@@ -1,5 +1,5 @@
-import { IKeyGenParams } from '@antjs/ant-js/src/model/IKeyGenParams';
-import { Model } from '@antjs/ant-js/src/model/Model';
+import { KeyGenParams } from '@antjs/ant-js';
+import { AntModel } from '@antjs/ant-js/build/model/ant-model';
 import { IAntMongoModel } from './IAntMongoModel';
 import { IMappingStrategy } from './IMappingStrategy';
 
@@ -12,7 +12,7 @@ const defaultMapping: IMappingStrategy = {
   fields: [ANT_MONGO_DEFAULT_ID],
 };
 
-export class AntMongoModel extends Model implements IAntMongoModel {
+export class AntMongoModel extends AntModel implements IAntMongoModel {
   /**
    * Name of the MongoDB collection mapped to this model.
    */
@@ -28,11 +28,7 @@ export class AntMongoModel extends Model implements IAntMongoModel {
    * @param collectionName MongoDB collection name.
    * @param mappingStrategy Mapping strategy.
    */
-  public constructor(
-    keyGen: IKeyGenParams,
-    collectionName: string,
-    mappingStrategy: IMappingStrategy = defaultMapping,
-  ) {
+  public constructor(keyGen: KeyGenParams, collectionName: string, mappingStrategy: IMappingStrategy = defaultMapping) {
     super(mappingStrategy.docToEntity(MONGO_DB_ID), keyGen);
     this._collectionName = collectionName;
     this._mappingStrategy = mappingStrategy;

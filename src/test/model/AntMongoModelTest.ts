@@ -1,7 +1,7 @@
-import { ITest } from '@antjs/ant-js/src/testapi/api/ITest';
+import { Test } from '@antjs/ant-js/build/testapi/api/test';
 import { AntMongoModel } from '../../model/AntMongoModel';
 
-export class AntMongoModelTest implements ITest {
+export class AntMongoModelTest implements Test {
   public performTests(): void {
     describe('Ant MongoDB Model tests', () => {
       this._itMustBeInitializable();
