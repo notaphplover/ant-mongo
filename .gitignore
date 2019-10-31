@@ -6,10 +6,7 @@
 /api-coverage
 
 # Compiled files
-/src/**/*.js
-/src/**/*.js.map
-/src/**/*.d.ts
-/src/**/*.d.ts.map
+/build
 
 # npm dependencies
 /node_modules

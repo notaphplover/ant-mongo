@@ -1,6 +1,6 @@
 export type FieldMapFunction = (field: string) => string;
 
-export interface IMappingStrategy {
+export interface MappingStrategy {
   /**
    * Used to convert a MongoDB document into an AntMongoEntity.
    */

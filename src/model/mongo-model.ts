@@ -1,7 +1,7 @@
 import { Entity, Model } from '@antjs/ant-js';
-import { IMappingStrategy } from './IMappingStrategy';
+import { MappingStrategy } from './mapping-strategy';
 
-export interface IAntMongoModel<TEntity extends Entity> extends Model<TEntity> {
+export interface MongoModel<TEntity extends Entity> extends Model<TEntity> {
   /**
    * Name of the MongoDB collection mapped to this model.
    */
@@ -10,5 +10,5 @@ export interface IAntMongoModel<TEntity extends Entity> extends Model<TEntity> {
   /**
    * Mapping strategy to transform entities and MongoDB docs.
    */
-  mappingStrategy: IMappingStrategy;
+  mappingStrategy: MappingStrategy;
 }
