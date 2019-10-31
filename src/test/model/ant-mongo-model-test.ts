@@ -1,5 +1,5 @@
 import { Test } from '@antjs/ant-js/build/testapi/api/test';
-import { AntMongoModel } from '../../model/AntMongoModel';
+import { AntMongoModel } from '../../model/ant-mongo-model';
 
 export class AntMongoModelTest implements Test {
   public performTests(): void {

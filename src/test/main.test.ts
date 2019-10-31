@@ -1,4 +1,4 @@
-import { AllTest } from './AllTest';
+import { AllTest } from './all-test';
 
 (() => {
   new AllTest().performTests();

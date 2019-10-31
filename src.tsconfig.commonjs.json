@@ -5,7 +5,7 @@
     "declarationMap": true,
     "module": "CommonJS",
     "noImplicitAny": true,
-    "outDir": "src",
+    "outDir": "build",
     "removeComments": true,
     "sourceMap": true,
     "rootDir": "src",
