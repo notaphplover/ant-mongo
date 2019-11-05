@@ -1,62 +1,67 @@
-import { Entity, Model } from '@antjs/ant-js/build/ant';
+import { Entity } from '@antjs/ant-js/build/ant';
 import { Collection, MongoClient } from 'mongodb';
+import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
 
-  model: Model<TEntity>;
-  private collection: Collection;
+  protected _model: MongoModel<TEntity>;
+  private _collection: Collection;
 
   constructor(url: string, dbName: string, collectionName: string) {
     MongoClient.connect(url, (err, client) => {
 
-      this.collection = client.db(dbName).collection(collectionName);
+      this._collection = client.db(dbName).collection(collectionName);
 
       client.close();
 
     });
   }
 
-  delete(id: string | number): Promise<any> {
-    return this.collection.findOneAndDelete({ id: id });
+  public get model(): MongoModel<TEntity> {
+    return this._model;
   }
 
-  insert(entity: TEntity): Promise<any> {
-    return this.collection.insertOne(entity);
+  public delete(id: string | number): Promise<any> {
+    return this._collection.findOneAndDelete({ id: id });
   }
 
-  mDelete(ids: string[] | number[]): Promise<any> {
-    return this.collection.deleteMany({ id: { $in: ids }});
+  public insert(entity: TEntity): Promise<any> {
+    return this._collection.insertOne(entity);
   }
 
-  mInsert(entities: TEntity[]): Promise<any> {
-    return this.collection.insertMany(entities);
+  public mDelete(ids: string[] | number[]): Promise<any> {
+    return this._collection.deleteMany({ id: { $in: ids }});
   }
 
-  mUpdate(entities: TEntity[]): Promise<any> {
+  public mInsert(entities: TEntity[]): Promise<any> {
+    return this._collection.insertMany(entities);
+  }
+
+  public mUpdate(entities: TEntity[]): Promise<any> {
     const results: Array<Promise<any>> = [];
     for (const entity of entities) {
       const mongoId = this.model.id;
-      results.push(this.collection.findOneAndUpdate({ id: mongoId }, entity));
+      results.push(this._collection.findOneAndUpdate({ id: mongoId }, entity));
     }
-    return results;
+    return Promise.all(results);
   }
 
-  update(entity: TEntity): Promise<any> {
+  public update(entity: TEntity): Promise<any> {
     const id = this.model.id;
-    return this.collection.findOneAndUpdate({ id: id }, entity);
+    return this._collection.findOneAndUpdate({ id: id }, entity);
   }
 
-  getById(id: number | string): Promise<TEntity> {
-    return this.collection.findOne({ id: id });
+  public getById(id: number | string): Promise<TEntity> {
+    return this._collection.findOne({ id: id });
   }
 
-  getByIds(ids: number[] | string[]): Promise<TEntity[]> {
-    return this.collection.find({ id: { $in: ids }});
+  public getByIds(ids: number[] | string[]): Promise<TEntity[]> {
+    return this._collection.find({ id: { $in: ids }});
   }
 
-  getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
-    return this.collection.find({ id: { $in: ids }}).sort({ id: 1 });
+  public getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
+    return this._collection.find({ id: { $in: ids }}).sort({ id: 1 });
   }
 
 }
