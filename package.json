@@ -25,6 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jasmine": "^3.4.4",
+    "@types/mongodb": "^3.3.8",
     "coveralls": "^3.0.7",
     "jasmine": "^3.5.0",
     "nyc": "^14.1.1",
