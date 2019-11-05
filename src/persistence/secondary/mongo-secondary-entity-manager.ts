@@ -4,17 +4,14 @@ import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
-
   protected _model: MongoModel<TEntity>;
   private _collection: Collection;
 
   constructor(url: string, dbName: string, collectionName: string) {
     MongoClient.connect(url, (err, client) => {
-
       this._collection = client.db(dbName).collection(collectionName);
 
       client.close();
-
     });
   }
 
@@ -31,7 +28,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public mDelete(ids: string[] | number[]): Promise<any> {
-    return this._collection.deleteMany({ id: { $in: ids }});
+    return this._collection.deleteMany({ id: { $in: ids } });
   }
 
   public mInsert(entities: TEntity[]): Promise<any> {
@@ -57,11 +54,13 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public getByIds(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection.find({ id: { $in: ids }}).toArray();
+    return this._collection.find({ id: { $in: ids } }).toArray();
   }
 
   public getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection.find({ id: { $in: ids }}).sort({ id: 1 }).toArray();
+    return this._collection
+      .find({ id: { $in: ids } })
+      .sort({ id: 1 })
+      .toArray();
   }
-
 }
