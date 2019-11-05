@@ -57,11 +57,11 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public getByIds(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection.find({ id: { $in: ids }});
+    return this._collection.find({ id: { $in: ids }}).toArray();
   }
 
   public getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection.find({ id: { $in: ids }}).sort({ id: 1 });
+    return this._collection.find({ id: { $in: ids }}).sort({ id: 1 }).toArray();
   }
 
 }
