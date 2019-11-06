@@ -1,15 +1,19 @@
 import { Entity } from '@antjs/ant-js/build/ant';
 import { Collection, MongoClient } from 'mongodb';
 import { MongoModel } from '../../model/mongo-model';
+import { MongoBuildArgs } from '../../model/MongoBuildArgs';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
   protected _model: MongoModel<TEntity>;
   private _collection: Collection;
+  private _client: MongoClient;
 
-  constructor(url: string, dbName: string, collectionName: string) {
-    MongoClient.connect(url, (err, client) => {
-      this._collection = client.db(dbName).collection(collectionName);
+  constructor(model: MongoModel<TEntity>, args: MongoBuildArgs) {
+    this._model = model;
+    MongoClient.connect(args.url, (err, client) => {
+      this._client = client;
+      this._collection = client.db(args.dbName).collection(this._model.collectionName);
 
       client.close();
     });
@@ -35,13 +39,20 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     return this._collection.insertMany(entities);
   }
 
-  public mUpdate(entities: TEntity[]): Promise<any> {
-    const results: Array<Promise<any>> = [];
-    for (const entity of entities) {
-      const mongoId = this.model.id;
-      results.push(this._collection.findOneAndUpdate({ id: mongoId }, entity));
+  public async mUpdate(entities: TEntity[]): Promise<any> {
+    const session = this._client.startSession();
+    try {
+      await session.withTransaction(() => {
+        const results: Array<Promise<any>> = [];
+        for (const entity of entities) {
+          const mongoId = this.model.id;
+          results.push(this._collection.findOneAndUpdate({ id: mongoId }, entity));
+        }
+        return Promise.all(results);
+      });
+    } finally {
+      await session.endSession();
     }
-    return Promise.all(results);
   }
 
   public update(entity: TEntity): Promise<any> {
