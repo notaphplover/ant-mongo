@@ -19,10 +19,19 @@ services:
     image: mongo:4.2.0-bionic
     networks:
       - ant
+    ports:
+      - "27017:27017"
   ant_redis:
     image: redis:5.0.6-alpine
     networks:
       - ant
+  mongo_seed:
+    build:
+      context: .
+      dockerfile: ./src/test/Dockerfile
+    links:
+      - ant_mongo
+
 networks:
   ant:
     driver: bridge

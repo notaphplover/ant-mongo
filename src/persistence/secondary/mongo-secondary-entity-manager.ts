@@ -1,7 +1,7 @@
 import { Entity } from '@antjs/ant-js/build/ant';
 import { Collection, MongoClient } from 'mongodb';
 import { MongoModel } from '../../model/mongo-model';
-import { MongoBuildArgs } from '../../model/MongoBuildArgs';
+import { MongoBuildArgs } from '../../model/mongo-build-args';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
@@ -14,8 +14,6 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     MongoClient.connect(args.url, (err, client) => {
       this._client = client;
       this._collection = client.db(args.dbName).collection(this._model.collectionName);
-
-      client.close();
     });
   }
 
@@ -41,18 +39,10 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
 
   public async mUpdate(entities: TEntity[]): Promise<any> {
     const session = this._client.startSession();
-    try {
-      await session.withTransaction(() => {
-        const results: Array<Promise<any>> = [];
-        for (const entity of entities) {
-          const mongoId = this.model.id;
-          results.push(this._collection.findOneAndUpdate({ id: mongoId }, entity));
-        }
-        return Promise.all(results);
-      });
-    } finally {
-      await session.endSession();
-    }
+    return session.withTransaction(() =>
+      Promise.all(entities.map((entity) =>
+        this._collection.findOneAndUpdate({ id: this.model.id }, entity))),
+    ).finally(session.endSession);
   }
 
   public update(entity: TEntity): Promise<any> {
