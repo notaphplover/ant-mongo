@@ -1,7 +1,7 @@
 import { Entity } from '@antjs/ant-js/build/ant';
 import { Collection, MongoClient } from 'mongodb';
-import { MongoModel } from '../../model/mongo-model';
 import { MongoBuildArgs } from '../../model/mongo-build-args';
+import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {

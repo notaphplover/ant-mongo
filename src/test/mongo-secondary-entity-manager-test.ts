@@ -60,6 +60,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
   private _deleteTest(): void {
     it('must be initializable', async (done) => {
 
+      done();
     });
   }
 
