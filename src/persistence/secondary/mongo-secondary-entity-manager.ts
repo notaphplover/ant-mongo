@@ -6,14 +6,14 @@ import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
   protected _model: MongoModel<TEntity>;
-  private _collection: Collection;
+  private _collection: Promise<Collection>;
   private _client: MongoClient;
 
   constructor(model: MongoModel<TEntity>, args: MongoBuildArgs) {
     this._model = model;
-    MongoClient.connect(args.url, (err, client) => {
+    this._collection = MongoClient.connect(args.url).then((client) => {
       this._client = client;
-      this._collection = client.db(args.dbName).collection(this._model.collectionName);
+      return client.db(args.dbName).collection(this._model.collectionName);
     });
   }
 
@@ -21,45 +21,45 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     return this._model;
   }
 
-  public delete(id: string | number): Promise<any> {
-    return this._collection.findOneAndDelete({ id: id });
+  public async delete(id: string | number): Promise<any> {
+    return (await this._collection).findOneAndDelete({ id: id });
   }
 
-  public insert(entity: TEntity): Promise<any> {
-    return this._collection.insertOne(entity);
+  public async insert(entity: TEntity): Promise<any> {
+    return (await this._collection).insertOne(entity);
   }
 
-  public mDelete(ids: string[] | number[]): Promise<any> {
-    return this._collection.deleteMany({ id: { $in: ids } });
+  public async mDelete(ids: string[] | number[]): Promise<any> {
+    return (await this._collection).deleteMany({ id: { $in: ids } });
   }
 
-  public mInsert(entities: TEntity[]): Promise<any> {
-    return this._collection.insertMany(entities);
+  public async mInsert(entities: TEntity[]): Promise<any> {
+    return (await this._collection).insertMany(entities);
   }
 
   public async mUpdate(entities: TEntity[]): Promise<any> {
     const session = this._client.startSession();
     return session.withTransaction(() =>
-      Promise.all(entities.map((entity) =>
-        this._collection.findOneAndUpdate({ id: this.model.id }, entity))),
+      Promise.all(entities.map(async (entity) =>
+        (await this._collection).findOneAndUpdate({ id: this.model.id }, entity))),
     ).finally(session.endSession);
   }
 
-  public update(entity: TEntity): Promise<any> {
+  public async update(entity: TEntity): Promise<any> {
     const id = this.model.id;
-    return this._collection.findOneAndUpdate({ id: id }, entity);
+    return (await this._collection).findOneAndUpdate({ id: id }, entity);
   }
 
-  public getById(id: number | string): Promise<TEntity> {
-    return this._collection.findOne({ id: id });
+  public async getById(id: number | string): Promise<TEntity> {
+    return (await this._collection).findOne({ id: id });
   }
 
-  public getByIds(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection.find({ id: { $in: ids } }).toArray();
+  public async getByIds(ids: number[] | string[]): Promise<TEntity[]> {
+    return (await this._collection).find({ id: { $in: ids } }).toArray();
   }
 
-  public getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
-    return this._collection
+  public async getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
+    return (await this._collection)
       .find({ id: { $in: ids } })
       .sort({ id: 1 })
       .toArray();

@@ -1,1 +1,0 @@
-[{"_id":{"$oid":"5dc46edf8d94c9c4ab7b345e"},"id":1.0,"name":"Adrian","country":"Spain"},{"_id":{"$oid":"5dc46eed8d94c9c4ab7b345f"},"id":2.0,"name":"Roberto","country":"Spain"},{"_id":{"$oid":"5dc46f278d94c9c4ab7b3460"},"id":3.0,"name":"Prueba 1","country":"Sweden"},{"_id":{"$oid":"5dc46f358d94c9c4ab7b3461"},"id":4.0,"name":"Prueba 2","country":"Sweden"}]
