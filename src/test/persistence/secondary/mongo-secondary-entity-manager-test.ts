@@ -37,7 +37,6 @@ export class MongoSecondaryEntityManagerTest implements Test {
     { id: '1', name: 'Adrian', country: 'Spain'},
     { id: '2', name: 'Roberto', country: 'Spain'},
     { id: '4', name: 'Prueba 2', country: 'Sweden'},
-
     { id: '3', name: 'Prueba 1', country: 'Sweden'},
   ];
 
@@ -71,6 +70,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     it('must insert user', async (done) => {
       await this._entityManager.insert(this._usersForTest[0]);
       const result = await (await this._collection).findOne({ id: this._usersForTest[0].id }) as UserTest;
+      (await this._collection).deleteOne({ id: this._usersForTest[0].id });
       expect(result).toEqual(this._usersForTest[0]);
       done();
     });
@@ -82,6 +82,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const result = await (await this._collection)
         .find({ id: { $in: this._idsForTest } })
         .toArray() as UserTest[];
+      (await this._collection).deleteMany({ id: { $in: this._idsForTest }});
       expect(this._usersForTest).toEqual(result);
       done();
     });
@@ -92,6 +93,8 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const user: UserTest = { id: '2', country: 'Germany', name: 'Roberto' };
       await this._entityManager.update(user);
       const result = await (await this._collection).findOne({ id: '2' });
+      (await this._collection).findOneAndUpdate({ id: '2'}, this._userCollection[1]);
+      delete result._id;
       expect(user).toEqual(result);
       done();
     });
@@ -100,14 +103,18 @@ export class MongoSecondaryEntityManagerTest implements Test {
   private _mUpdateTest(): void {
     it('must update users', async (done) => {
       const users: UserTest[] = [
-        { id: '1', name: 'Adrian', country: 'Spain'},
-        { id: '2', name: 'Roberto', country: 'Spain'},
-        { id: '4', name: 'Prueba 2', country: 'Sweden'},
-        { id: '3', name: 'Prueba 1', country: 'Sweden'},
+        { id: '1', name: 'Pepito', country: 'Spain'},
+        { id: '2', name: 'Roberto', country: 'Germany'},
+        { id: '4', name: 'Eustaquio', country: 'Spain'},
+        { id: '3', name: 'Prueba 5', country: 'Sweden'},
       ];
       await this._entityManager.mUpdate(users);
       const results = await (await this._collection).find({ id: { $in: this._idsCollection}}).toArray();
+      for (const user of this._userCollection) {
+        (await this._collection).findOneAndUpdate({ id: user.id }, user);
+      }
       expect(results).toEqual(users);
+      expect(false).toEqual(true);
       done();
     });
   }
@@ -116,6 +123,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     it('must delete user', async (done) => {
       await this._entityManager.delete('1');
       const result = await (await this._collection).findOne({ id: '1' });
+      (await this._collection).insertOne(this._userCollection[0]);
       expect(result).toBeNull();
       done();
     });
@@ -125,6 +133,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     it('must delete users', async (done) => {
       await this._entityManager.mDelete(this._idsCollection);
       const result = await (await this._collection).find({ id: { $in: this._idsCollection }}).toArray();
+      (await this._collection).insertMany(this._userCollection);
       expect(result).toEqual([]);
       done();
     });

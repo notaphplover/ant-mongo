@@ -31,6 +31,10 @@ services:
       dockerfile: ./src/test/Dockerfile
     links:
       - ant_mongo
+    depends_on:
+      - ant_mongo
+    networks:
+      - ant
 
 networks:
   ant:
