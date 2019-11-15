@@ -37,13 +37,17 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
 
   public async mUpdate(entities: TEntity[]): Promise<any> {
     const session = (await this._client).startSession();
-    return session
-      .withTransaction(() =>
-        Promise.all(
-          entities.map(async (entity) => (await this._collection).findOneAndUpdate({ id: entity.id }, entity)),
-        ),
-      )
-      .finally(session.endSession);
+    try {
+      await session.withTransaction(async () => {
+        const results: Array<Promise<any>> = [];
+        for (const entity of entities) {
+          results.push((await this._collection).findOneAndUpdate({ id: entity.id }, { $set: entity }));
+        }
+        return Promise.all(results);
+      });
+    } finally {
+      await session.endSession();
+    }
   }
 
   public async update(entity: TEntity): Promise<any> {
