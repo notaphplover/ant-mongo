@@ -5,6 +5,11 @@ import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
+
+  public get model(): MongoModel<TEntity> {
+    return this._model;
+  }
+
   protected _model: MongoModel<TEntity>;
   private _collection: Promise<Collection>;
   private _client: Promise<MongoClient>;
@@ -13,10 +18,6 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     this._model = model;
     this._client = MongoClient.connect(args.url);
     this._collection = this._client.then((client) => client.db(args.dbName).collection(this._model.collectionName));
-  }
-
-  public get model(): MongoModel<TEntity> {
-    return this._model;
   }
 
   public async delete(id: string | number): Promise<any> {
@@ -39,13 +40,14 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     const session = (await this._client).startSession();
     return session.withTransaction(() =>
       Promise.all(entities.map(async (entity) =>
-        (await this._collection).findOneAndUpdate({ id: this.model.id }, entity))),
+        (await this._collection).findOneAndUpdate({ id: entity.id }, entity))),
     ).finally(session.endSession);
   }
 
   public async update(entity: TEntity): Promise<any> {
-    const id = this.model.id;
-    return (await this._collection).findOneAndUpdate({ id: id }, { $set: entity }, { upsert: true });
+    return (await this._collection).findOneAndUpdate({ id: entity.id }, { $set: entity }, {
+      upsert: true,
+    });
   }
 
   public async getById(id: number | string): Promise<TEntity> {

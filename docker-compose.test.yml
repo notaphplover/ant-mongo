@@ -25,16 +25,6 @@ services:
     image: redis:5.0.6-alpine
     networks:
       - ant
-  mongo_seed:
-    build:
-      context: .
-      dockerfile: ./src/test/Dockerfile
-    links:
-      - ant_mongo
-    depends_on:
-      - ant_mongo
-    networks:
-      - ant
 
 networks:
   ant:
