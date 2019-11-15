@@ -3,9 +3,9 @@ import { Collection } from 'mongodb';
 import { UserTest } from '../../model/user-test';
 
 export class MongoHelper {
-
   public static getHash(text: string): string {
-    return crypto.createHmac('sha256', this._secret)
+    return crypto
+      .createHmac('sha256', this._secret)
       .update(text)
       .digest('hex');
   }
@@ -15,7 +15,7 @@ export class MongoHelper {
   }
 
   public static findByIds(collection: Collection, ids: string[] | number[]): Promise<UserTest[]> {
-    return collection.find({ id: { $in: ids }}).toArray();
+    return collection.find({ id: { $in: ids } }).toArray();
   }
 
   public static insert(collection: Collection, user: UserTest): Promise<any> {
@@ -27,5 +27,4 @@ export class MongoHelper {
   }
 
   private static _secret = 'abcdefg';
-
 }

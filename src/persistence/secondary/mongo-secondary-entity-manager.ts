@@ -5,7 +5,6 @@ import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
-
   public get model(): MongoModel<TEntity> {
     return this._model;
   }
@@ -38,16 +37,23 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
 
   public async mUpdate(entities: TEntity[]): Promise<any> {
     const session = (await this._client).startSession();
-    return session.withTransaction(() =>
-      Promise.all(entities.map(async (entity) =>
-        (await this._collection).findOneAndUpdate({ id: entity.id }, entity))),
-    ).finally(session.endSession);
+    return session
+      .withTransaction(() =>
+        Promise.all(
+          entities.map(async (entity) => (await this._collection).findOneAndUpdate({ id: entity.id }, entity)),
+        ),
+      )
+      .finally(session.endSession);
   }
 
   public async update(entity: TEntity): Promise<any> {
-    return (await this._collection).findOneAndUpdate({ id: entity.id }, { $set: entity }, {
-      upsert: true,
-    });
+    return (await this._collection).findOneAndUpdate(
+      { id: entity.id },
+      { $set: entity },
+      {
+        upsert: true,
+      },
+    );
   }
 
   public async getById(id: number | string): Promise<TEntity> {

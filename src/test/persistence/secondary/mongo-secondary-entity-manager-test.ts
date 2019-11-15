@@ -11,14 +11,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
 
   private _keyGenParams = { prefix: 'some-prefix' };
 
-  private _idsForTest: string[] | number[] = [
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-  ];
+  private _idsForTest: string[] | number[] = ['8', '9', '10', '11', '12', '13'];
 
   private _usersForTest: UserTest[] = [
     { id: '8', name: 'Alex', country: 'Spain' },
@@ -28,18 +21,13 @@ export class MongoSecondaryEntityManagerTest implements Test {
     { id: '12', name: 'Steve A', country: 'Germany' },
     { id: '13', name: 'Micaelo', country: 'Spain' },
   ];
-  private _idsCollection: string[] | number[] = [
-    '1',
-    '2',
-    '3',
-    '4',
-  ];
+  private _idsCollection: string[] | number[] = ['1', '2', '3', '4'];
 
   private _userCollection: UserTest[] = [
-    { id: '1', name: 'Adrian', country: 'Spain'},
-    { id: '2', name: 'Roberto', country: 'Spain'},
-    { id: '4', name: 'Prueba 2', country: 'Sweden'},
-    { id: '3', name: 'Prueba 1', country: 'Sweden'},
+    { id: '1', name: 'Adrian', country: 'Spain' },
+    { id: '2', name: 'Roberto', country: 'Spain' },
+    { id: '4', name: 'Prueba 2', country: 'Sweden' },
+    { id: '3', name: 'Prueba 1', country: 'Sweden' },
   ];
 
   public async performTests(): Promise<void> {
@@ -113,14 +101,14 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
       const users: UserTest[] = [
-        { id: '1', name: 'Pepito', country: 'Spain'},
-        { id: '2', name: 'Roberto', country: 'Germany'},
-        { id: '4', name: 'Eustaquio', country: 'Spain'},
-        { id: '3', name: 'Prueba 5', country: 'Sweden'},
+        { id: '1', name: 'Pepito', country: 'Spain' },
+        { id: '2', name: 'Roberto', country: 'Germany' },
+        { id: '4', name: 'Eustaquio', country: 'Spain' },
+        { id: '3', name: 'Prueba 5', country: 'Sweden' },
       ];
       await MongoHelper.mInsert(collection, this._userCollection);
       await entityManager.mUpdate(users);
-      const results = await collection.find({ id: { $in: this._idsCollection}}).toArray();
+      const results = await collection.find({ id: { $in: this._idsCollection } }).toArray();
       expect(results.length).toEqual(users.length);
       for (let i = 0; i < results.length; i++) {
         expect(results[i].id).toEqual(users[i].id);
