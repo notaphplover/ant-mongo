@@ -109,11 +109,12 @@ export class MongoSecondaryEntityManagerTest implements Test {
       await MongoHelper.mInsert(collection, this._userCollection);
       await entityManager.mUpdate(users);
       const results = await collection.find({ id: { $in: this._idsCollection } }).toArray();
+      const resultsWithNoMongoId = results.map((r) => {
+        return { id: r.id, name: r.name, country: r.country };
+      });
       expect(results.length).toBe(users.length);
-      for (let i = 0; i < results.length; i++) {
-        expect(results[i].id).toEqual(users[i].id);
-        expect(results[i].name).toEqual(users[i].name);
-        expect(results[i].country).toEqual(users[i].country);
+      for (const user of users) {
+        expect(resultsWithNoMongoId).toContain(user);
       }
       done();
     });
