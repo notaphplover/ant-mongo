@@ -5,9 +5,6 @@ import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
-  public get model(): MongoModel<TEntity> {
-    return this._model;
-  }
 
   protected _db: Promise<Db>;
   protected _model: MongoModel<TEntity>;
@@ -17,6 +14,10 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     this._model = model;
     this._client = MongoClient.connect(args.url);
     this._db = this._client.then((client) => client.db(args.dbName));
+  }
+
+  public get model(): MongoModel<TEntity> {
+    return this._model;
   }
 
   public async delete(id: string | number): Promise<any> {
