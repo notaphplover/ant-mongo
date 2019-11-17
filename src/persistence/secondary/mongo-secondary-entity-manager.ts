@@ -35,19 +35,17 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     return (await this._collection).insertMany(entities);
   }
 
-  public async mUpdate(entities: TEntity[]): Promise<any> {
-    const session = (await this._client).startSession();
-    try {
-      await session.withTransaction(async () => {
-        const results: Array<Promise<any>> = [];
-        for (const entity of entities) {
-          results.push((await this._collection).findOneAndUpdate({ id: entity.id }, { $set: entity }));
-        }
-        return Promise.all(results);
-      });
-    } finally {
-      await session.endSession();
-    }
+  public mUpdate(entities: TEntity[]): Promise<any> {
+    return this._collection.then((collection) => {
+      return collection.bulkWrite(
+        entities.map(
+          (entity) => {
+            return { updateOne: { filter: { id: entity.id }, update: { $set: entity } } };
+          },
+        ),
+        { ordered: false },
+      );
+    });
   }
 
   public async update(entity: TEntity): Promise<any> {
