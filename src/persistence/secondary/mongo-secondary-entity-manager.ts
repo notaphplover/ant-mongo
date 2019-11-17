@@ -38,11 +38,9 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   public mUpdate(entities: TEntity[]): Promise<any> {
     return this._collection.then((collection) => {
       return collection.bulkWrite(
-        entities.map(
-          (entity) => {
-            return { updateOne: { filter: { id: entity.id }, update: { $set: entity } } };
-          },
-        ),
+        entities.map((entity) => {
+          return { updateOne: { filter: { id: entity.id }, update: { $set: entity } } };
+        }),
         { ordered: false },
       );
     });
