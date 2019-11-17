@@ -109,7 +109,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
       await MongoHelper.mInsert(collection, this._userCollection);
       await entityManager.mUpdate(users);
       const results = await collection.find({ id: { $in: this._idsCollection } }).toArray();
-      expect(results.length).toEqual(users.length);
+      expect(results.length).toBe(users.length);
       for (let i = 0; i < results.length; i++) {
         expect(results[i].id).toEqual(users[i].id);
         expect(results[i].name).toEqual(users[i].name);
