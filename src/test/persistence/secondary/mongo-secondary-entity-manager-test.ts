@@ -1,5 +1,5 @@
 import { Test } from '@antjs/ant-js/build/testapi/api/test';
-import { Collection, MongoClient } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import { AntMongoModel } from '../../../model/ant-mongo-model';
 import { MongoSecondaryEntityManager } from '../../../persistence/secondary/mongo-secondary-entity-manager';
 import { UserTest } from '../../model/user-test';
@@ -11,16 +11,6 @@ export class MongoSecondaryEntityManagerTest implements Test {
 
   private _keyGenParams = { prefix: 'some-prefix' };
 
-  private _idsForTest: string[] | number[] = ['8', '9', '10', '11', '12', '13'];
-
-  private _usersForTest: UserTest[] = [
-    { id: '8', name: 'Alex', country: 'Spain' },
-    { id: '9', name: 'Andrew', country: 'Germany' },
-    { id: '10', name: 'Dario', country: 'Spain' },
-    { id: '11', name: 'Steve', country: 'Germany' },
-    { id: '12', name: 'Steve A', country: 'Germany' },
-    { id: '13', name: 'Micaelo', country: 'Spain' },
-  ];
   private _idsCollection: string[] | number[] = ['1', '2', '3', '4'];
 
   private _userCollection: UserTest[] = [
@@ -52,9 +42,11 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
-      await entityManager.insert(this._usersForTest[0]);
-      const result = await MongoHelper.findById(collection, this._usersForTest[0].id);
-      expect(result).toEqual(this._usersForTest[0]);
+      const user: UserTest = { id: '8', name: 'Alex', country: 'Spain' };
+
+      await entityManager.insert(user);
+      const result = await MongoHelper.findById(collection, user.id);
+      expect(result).toEqual(user);
       done();
     });
   }
@@ -67,9 +59,23 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
-      await entityManager.mInsert(this._usersForTest);
-      const result = await MongoHelper.findByIds(collection, this._idsForTest);
-      expect(result).toEqual(this._usersForTest);
+      const usersForTest: UserTest[] = [
+        { id: '8', name: 'Alex', country: 'Spain' },
+        { id: '9', name: 'Andrew', country: 'Germany' },
+        { id: '10', name: 'Dario', country: 'Spain' },
+        { id: '11', name: 'Steve', country: 'Germany' },
+        { id: '12', name: 'Steve A', country: 'Germany' },
+        { id: '13', name: 'Micaelo', country: 'Spain' },
+      ];
+
+      const idsForTest = usersForTest.map((u) => u.id);
+
+      await entityManager.mInsert(usersForTest);
+      const results = await MongoHelper.findByIds(collection, idsForTest);
+      expect(results.length).toEqual(usersForTest.length);
+      for (const user of usersForTest) {
+        expect(results).toContain(user);
+      }
       done();
     });
   }
