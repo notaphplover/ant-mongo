@@ -5,7 +5,6 @@ import { MongoModel } from '../../model/mongo-model';
 import { SecondaryEntityManager } from './secondary-entity-manager';
 
 export class MongoSecondaryEntityManager<TEntity extends Entity> implements SecondaryEntityManager<TEntity> {
-
   protected _db: Promise<Db>;
   protected _model: MongoModel<TEntity>;
   private _client: Promise<MongoClient>;
@@ -48,10 +47,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public async update(entity: TEntity): Promise<any> {
-    return (await this._getCollection()).updateOne(
-      { id: entity.id },
-      { $set: entity },
-    );
+    return (await this._getCollection()).updateOne({ id: entity.id }, { $set: entity });
   }
 
   public async getById(id: number | string): Promise<TEntity> {
