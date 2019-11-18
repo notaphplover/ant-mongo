@@ -18,7 +18,7 @@
     "test-debug": "npm run test-docker-debug",
     "test-debug-only": "node --inspect-brk=0.0.0.0:${NODE_DEBUG_PORT_INNER} ./node_modules/jasmine/bin/jasmine.js ./build/test/main.test.js",
     "test-docker": "docker-compose -f docker-compose.test.yml rm -vf ant_mongo && docker-compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from ant_lib",
-    "test-docker-debug": "docker-compose -f docker-compose.test.debug.yml up --abort-on-container-exit --exit-code-from ant_lib",
+    "test-docker-debug": "docker-compose -f docker-compose.test.yml rm -vf ant_mongo && docker-compose -f docker-compose.test.debug.yml up --abort-on-container-exit --exit-code-from ant_lib",
     "test-only": "node_modules/nyc/bin/nyc.js --nycrc-path=api.nycrc.json node ./node_modules/jasmine/bin/jasmine.js ./build/test/main.test.js"
   },
   "author": "Roberto Pintos López",
