@@ -20,7 +20,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public async delete(id: string | number): Promise<any> {
-    return (await this._getCollection()).findOneAndDelete({ id: id });
+    return (await this._getCollection()).deleteOne({ id: id });
   }
 
   public async insert(entity: TEntity): Promise<any> {

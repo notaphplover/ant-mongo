@@ -11,14 +11,20 @@ export class MongoSecondaryEntityManagerTest implements Test {
 
   private _keyGenParams = { prefix: 'some-prefix' };
 
-  private _idsCollection: string[] | number[] = ['1', '2', '3', '4'];
-
   private _userCollection: UserTest[] = [
     { id: '1', name: 'Adrian', country: 'Spain' },
     { id: '2', name: 'Roberto', country: 'Spain' },
     { id: '4', name: 'Prueba 2', country: 'Sweden' },
     { id: '3', name: 'Prueba 1', country: 'Sweden' },
+    { id: '8', name: 'Alex', country: 'Spain' },
+    { id: '9', name: 'Andrew', country: 'Germany' },
+    { id: '10', name: 'Dario', country: 'Spain' },
+    { id: '11', name: 'Steve', country: 'Germany' },
+    { id: '12', name: 'Steve A', country: 'Germany' },
+    { id: '13', name: 'Micaelo', country: 'Spain' },
   ];
+
+  private _idsCollection: string[] | number[] = this._userCollection.map((u) => u.id);
 
   public async performTests(): Promise<void> {
     describe('Mongo secondary entity manager test', () => {
@@ -59,21 +65,12 @@ export class MongoSecondaryEntityManagerTest implements Test {
       const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
-      const usersForTest: UserTest[] = [
-        { id: '8', name: 'Alex', country: 'Spain' },
-        { id: '9', name: 'Andrew', country: 'Germany' },
-        { id: '10', name: 'Dario', country: 'Spain' },
-        { id: '11', name: 'Steve', country: 'Germany' },
-        { id: '12', name: 'Steve A', country: 'Germany' },
-        { id: '13', name: 'Micaelo', country: 'Spain' },
-      ];
+      const idsForTest = this._userCollection.map((u) => u.id);
 
-      const idsForTest = usersForTest.map((u) => u.id);
-
-      await entityManager.mInsert(usersForTest);
+      await entityManager.mInsert(this._userCollection);
       const results = await MongoHelper.findByIds(collection, idsForTest);
-      expect(results.length).toEqual(usersForTest.length);
-      for (const user of usersForTest) {
+      expect(results.length).toEqual(this._userCollection.length);
+      for (const user of this._userCollection) {
         expect(results).toContain(user);
       }
       done();
@@ -114,7 +111,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
       ];
       await MongoHelper.mInsert(collection, this._userCollection);
       await entityManager.mUpdate(users);
-      const results = await collection.find({ id: { $in: this._idsCollection } }).toArray();
+      const results = await collection.find({ id: { $in: users.map((u) => u.id) } }).toArray();
       const resultsWithNoMongoId = results.map((r) => {
         return { id: r.id, name: r.name, country: r.country };
       });
@@ -198,7 +195,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
 
       await MongoHelper.mInsert(collection, this._userCollection);
       const users = await entityManager.getByIdsOrderedAsc(this._idsCollection);
-      const aux = this._userCollection;
+      const aux = new Array<UserTest>(...this._userCollection);
       expect(users).toEqual(aux.sort(this._comparasion));
       done();
     });
