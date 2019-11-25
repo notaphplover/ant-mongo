@@ -12,16 +12,16 @@ export class MongoSecondaryEntityManagerTest implements Test {
   private _keyGenParams = { prefix: 'some-prefix' };
 
   private _userCollection: UserTest[] = [
-    { id: '1', name: 'Adrian', country: 'Spain' },
-    { id: '2', name: 'Roberto', country: 'Spain' },
-    { id: '4', name: 'Prueba 2', country: 'Sweden' },
-    { id: '3', name: 'Prueba 1', country: 'Sweden' },
-    { id: '8', name: 'Alex', country: 'Spain' },
-    { id: '9', name: 'Andrew', country: 'Germany' },
-    { id: '10', name: 'Dario', country: 'Spain' },
-    { id: '11', name: 'Steve', country: 'Germany' },
-    { id: '12', name: 'Steve A', country: 'Germany' },
-    { id: '13', name: 'Micaelo', country: 'Spain' },
+    { id: '1', name: 'Adrian', country: 'Spain', date: new Date() },
+    { id: '2', name: 'Roberto', country: 'Spain', date: new Date() },
+    { id: '4', name: 'Prueba 2', country: 'Sweden', date: new Date() },
+    { id: '3', name: 'Prueba 1', country: 'Sweden', date: new Date() },
+    { id: '8', name: 'Alex', country: 'Spain', date: new Date() },
+    { id: '9', name: 'Andrew', country: 'Germany', date: new Date() },
+    { id: '10', name: 'Dario', country: 'Spain', date: new Date() },
+    { id: '11', name: 'Steve', country: 'Germany', date: new Date() },
+    { id: '12', name: 'Steve A', country: 'Germany', date: new Date() },
+    { id: '13', name: 'Micaelo', country: 'Spain', date: new Date() },
   ];
 
   private _idsCollection: string[] | number[] = this._userCollection.map((u) => u.id);
@@ -44,11 +44,10 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must insert user';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
-      const user: UserTest = { id: '8', name: 'Alex', country: 'Spain' };
+      const user: UserTest = { id: '8', name: 'Alex', country: 'Spain', date: new Date() };
 
       await entityManager.insert(user);
       const result = await MongoHelper.findById(collection, user.id);
@@ -61,8 +60,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must insert multiple users';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       const idsForTest = this._userCollection.map((u) => u.id);
@@ -81,11 +79,10 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must update user';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
-      const user: UserTest = { id: '2', country: 'Germany', name: 'Roberto' };
+      const user: UserTest = { id: '2', country: 'Germany', name: 'Roberto', date: new Date() };
       await MongoHelper.insert(collection, this._userCollection[1]);
       await entityManager.update(user);
       const result = await MongoHelper.findById(collection, this._idsCollection[1]);
@@ -100,20 +97,19 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must update users';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
       const users: UserTest[] = [
-        { id: '1', name: 'Pepito', country: 'Spain' },
-        { id: '2', name: 'Roberto', country: 'Germany' },
-        { id: '4', name: 'Eustaquio', country: 'Spain' },
-        { id: '3', name: 'Prueba 5', country: 'Sweden' },
+        { id: '1', name: 'Pepito', country: 'Spain', date: new Date() },
+        { id: '2', name: 'Roberto', country: 'Germany', date: new Date() },
+        { id: '4', name: 'Eustaquio', country: 'Spain', date: new Date() },
+        { id: '3', name: 'Prueba 5', country: 'Sweden', date: new Date() },
       ];
       await MongoHelper.mInsert(collection, this._userCollection);
       await entityManager.mUpdate(users);
       const results = await collection.find({ id: { $in: users.map((u) => u.id) } }).toArray();
       const resultsWithNoMongoId = results.map((r) => {
-        return { id: r.id, name: r.name, country: r.country };
+        return { id: r.id, name: r.name, country: r.country, date: r.date };
       });
       expect(results.length).toBe(users.length);
       for (const user of users) {
@@ -127,8 +123,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must delete user';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       await MongoHelper.insert(collection, this._userCollection[0]);
@@ -143,8 +138,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must delete users';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       await MongoHelper.mInsert(collection, this._userCollection);
@@ -159,8 +153,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must get user by id';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       await MongoHelper.insert(collection, this._userCollection[0]);
@@ -174,8 +167,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must get users by ids';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       await MongoHelper.mInsert(collection, this._userCollection);
@@ -189,8 +181,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
     const text = 'must get users by ids sorted';
     const hash = MongoHelper.getHash(text);
     it(text, async (done) => {
-      const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
-      const entityManager = new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
+      const entityManager = this._initEntityManager(hash);
       const collection = (await MongoClient.connect(this._url)).db(this._dbName).collection(hash);
 
       await MongoHelper.mInsert(collection, this._userCollection);
@@ -209,5 +200,10 @@ export class MongoSecondaryEntityManagerTest implements Test {
     } else {
       return 0;
     }
+  }
+
+  private _initEntityManager(hash: string): MongoSecondaryEntityManager<UserTest> {
+    const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
+    return new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
   }
 }
