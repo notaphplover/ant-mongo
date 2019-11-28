@@ -20,7 +20,7 @@ services:
     networks:
       - ant
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT_OUTER}:${MONGO_PORT_INNER}"
   ant_redis:
     image: redis:5.0.6-alpine
     networks:
