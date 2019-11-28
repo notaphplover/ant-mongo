@@ -20,7 +20,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public async delete(id: string | number): Promise<any> {
-    return (await this._getCollection()).deleteOne({ id: id });
+    return (await this._getCollection()).deleteOne({ [this._model.id]: id });
   }
 
   public async insert(entity: TEntity): Promise<any> {
@@ -28,7 +28,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public async mDelete(ids: string[] | number[]): Promise<any> {
-    return (await this._getCollection()).deleteMany({ id: { $in: ids } });
+    return (await this._getCollection()).deleteMany({ [this._model.id]: { $in: ids } });
   }
 
   public async mInsert(entities: TEntity[]): Promise<any> {
@@ -39,7 +39,7 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
     return this._getCollection().then((collection) => {
       return collection.bulkWrite(
         entities.map((entity) => {
-          return { updateOne: { filter: { id: entity.id }, update: { $set: entity } } };
+          return { updateOne: { filter: { [this._model.id]: entity.id }, update: { $set: entity } } };
         }),
         { ordered: false },
       );
@@ -47,21 +47,21 @@ export class MongoSecondaryEntityManager<TEntity extends Entity> implements Seco
   }
 
   public async update(entity: TEntity): Promise<any> {
-    return (await this._getCollection()).updateOne({ id: entity.id }, { $set: entity });
+    return (await this._getCollection()).updateOne({ [this._model.id]: entity.id }, { $set: entity });
   }
 
   public async getById(id: number | string): Promise<TEntity> {
-    return (await this._getCollection()).findOne({ id: id });
+    return (await this._getCollection()).findOne({ [this._model.id]: id });
   }
 
   public async getByIds(ids: number[] | string[]): Promise<TEntity[]> {
-    return (await this._getCollection()).find({ id: { $in: ids } }).toArray();
+    return (await this._getCollection()).find({ [this._model.id]: { $in: ids } }).toArray();
   }
 
   public async getByIdsOrderedAsc(ids: number[] | string[]): Promise<TEntity[]> {
     return (await this._getCollection())
-      .find({ id: { $in: ids } })
-      .sort({ id: 1 })
+      .find({ [this._model.id]: { $in: ids } })
+      .sort({ [this._model.id]: 1 })
       .toArray();
   }
 
