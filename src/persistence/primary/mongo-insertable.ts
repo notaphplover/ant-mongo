@@ -1,6 +1,6 @@
 import { Entity, PersistencyUpdateOptions } from '@antjs/ant-js';
 
-export interface SqlInsertable<TEntity extends Entity> {
+export interface MongoInsertable<TEntity extends Entity> {
   /**
    * Inserts an entity.
    * @param entity Entity to be inserted.
