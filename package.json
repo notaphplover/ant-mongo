@@ -34,7 +34,7 @@
     "typescript": "^3.7.4"
   },
   "dependencies": {
-    "@antjs/ant-js": "^1.0.0-beta.14",
+    "@antjs/ant-js": "^1.0.1",
     "mongodb": "^3.4.1"
   },
   "repository": {
