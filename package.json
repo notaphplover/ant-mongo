@@ -24,18 +24,18 @@
   "author": "Roberto Pintos López",
   "license": "MIT",
   "devDependencies": {
-    "@types/jasmine": "^3.4.4",
-    "@types/mongodb": "^3.3.8",
-    "coveralls": "^3.0.7",
+    "@types/jasmine": "^3.5.0",
+    "@types/mongodb": "^3.3.14",
+    "coveralls": "^3.0.9",
     "jasmine": "^3.5.0",
-    "nyc": "^14.1.1",
-    "prettier": "^1.18.2",
-    "tslint": "^5.20.0",
-    "typescript": "^3.6.4"
+    "nyc": "^15.0.0",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "@antjs/ant-js": "^1.0.0-beta.14",
-    "mongodb": "^3.3.3"
+    "mongodb": "^3.4.1"
   },
   "repository": {
     "type": "git",
