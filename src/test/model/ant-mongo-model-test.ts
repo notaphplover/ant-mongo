@@ -11,24 +11,19 @@ export class AntMongoModelTest implements Test {
 
   private _itMustBeInitializable(): void {
     it('must be initializable', async (done) => {
-      expect(() => new AntMongoModel({ prefix: 'some-prefix' }, 'my-sample-model')).not.toThrowError();
+      expect(() => new AntMongoModel('id', { prefix: 'some-prefix' }, 'my-sample-model')).not.toThrowError();
       done();
     });
   }
 
   private _itMustStoreInitialValues(): void {
     it('must store initial values', async (done) => {
+      const id = 'id';
       const keyGenParams = { prefix: 'some-prefix' };
       const collectionName = 'my-sample-model';
-      const mappings = {
-        docToEntity: () => 'id',
-        entityToDoc: () => '_id',
-        fields: ['id'],
-      };
-      const model = new AntMongoModel(keyGenParams, collectionName, mappings);
+      const model = new AntMongoModel(id, keyGenParams, collectionName);
 
       expect(model.collectionName).toBe(collectionName);
-      expect(model.mappingStrategy).toBe(mappings);
       done();
     });
   }

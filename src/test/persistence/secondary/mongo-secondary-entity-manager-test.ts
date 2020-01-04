@@ -203,7 +203,7 @@ export class MongoSecondaryEntityManagerTest implements Test {
   }
 
   private _initEntityManager(hash: string): MongoSecondaryEntityManager<UserTest> {
-    const model = new AntMongoModel<UserTest>(this._keyGenParams, hash);
+    const model = new AntMongoModel<UserTest>('id', this._keyGenParams, hash);
     return new MongoSecondaryEntityManager<UserTest>(model, { url: this._url, dbName: this._dbName });
   }
 }
