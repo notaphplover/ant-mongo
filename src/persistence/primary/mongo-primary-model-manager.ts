@@ -6,7 +6,6 @@ import { PrimaryModelManager } from './primary-model-manager';
 export class MongoPrimaryModelManager<TEntity extends Entity>
   extends AntPrimaryModelManager<TEntity, SecondaryEntityManager<TEntity>>
   implements PrimaryModelManager<TEntity> {
-
   /**
    * Deletes an entity from the cache layer.
    * @param id id of the entity to delete.

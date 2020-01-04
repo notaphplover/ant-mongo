@@ -4,4 +4,4 @@ import { MongoInsertable } from './mongo-insertable';
 
 export interface PrimaryModelManager<TEntity extends Entity>
   extends AntJsPrimaryModelManager<TEntity>,
-    MongoInsertable<TEntity> { }
+    MongoInsertable<TEntity> {}
